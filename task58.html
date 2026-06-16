@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PDF Invoice Generator</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 40px;
+        }
+
+        input {
+            width: 250px;
+            padding: 8px;
+            margin: 5px;
+        }
+
+        button {
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Generate Invoice PDF</h2>
+
+<input type="text" id="customer" placeholder="Customer Name"><br>
+
+<input type="text" id="product" placeholder="Product Name"><br>
+
+<input type="number" id="quantity" placeholder="Quantity"><br>
+
+<input type="number" id="price" placeholder="Price"><br><br>
+
+<button onclick="downloadPDF()">
+Generate PDF
+</button>
+
+<script>
+async function downloadPDF() {
+
+    const data = {
+        customer:
+            document.getElementById("customer").value,
+
+        product:
+            document.getElementById("product").value,
+
+        quantity:
+            document.getElementById("quantity").value,
+
+        price:
+            document.getElementById("price").value
+    };
+
+    const response = await fetch(
+        "http://localhost:3000/generate-pdf",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                "application/json"
+            },
+
+            body: JSON.stringify(data)
+        }
+    );
+
+    const blob = await response.blob();
+
+    const url =
+        window.URL.createObjectURL(blob);
+
+    const a =
+        document.createElement("a");
+
+    a.href = url;
+
+    a.download = "invoice.pdf";
+
+    a.click();
+}
+</script>
+
+</body>
+</html>
